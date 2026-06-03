@@ -1,0 +1,17 @@
+# 빌드 산출물 — 리포엔 소스만, 바이너리는 빌드로 재현
+build/
+dist/
+*.exe
+*.o
+*.obj
+*.zip
+best.dat
+
+# raylib 소스 (외부 의존성 — 빌드 시 별도 clone, README 참조)
+tools/raylib-src/
+
+# OS / 에디터
+Thumbs.db
+desktop.ini
+.DS_Store
+*.tmp
