@@ -44,15 +44,15 @@ static float trailX[TRAIL], trailY[TRAIL]; static int trailHead=0;
 static struct { float x,y,life; } pops[POPS]; static int popHead=0;
 
 // ---- 난이도 곡선: playTime(초) → 속도 ----
-// 3구간: 0~12s 완만(온보딩) / 12~40s 가속 / 40s+ 고속
+// 3구간: 0~14s 완만(온보딩) / 14~45s 가속 / 45s+ 고속. (난이도 하향 조정: 시작 더 느리게·가속 완만하게)
 static float curve_speed(float t){
-    if (t < 12.0f)       return 190.0f + t*4.0f;            // 190→238 (천천히, 온보딩)
-    else if (t < 40.0f)  return 238.0f + (t-12.0f)*5.0f;    // 238→378 (완만 가속)
-    else                 return 378.0f + (t-40.0f)*2.5f;    // 378→ 아주 천천히 계속
+    if (t < 14.0f)       return 175.0f + t*3.5f;            // 175→224 (더 천천히, 온보딩 연장)
+    else if (t < 45.0f)  return 224.0f + (t-14.0f)*4.0f;    // 224→348 (가속 완만: 5→4)
+    else                 return 348.0f + (t-45.0f)*2.0f;    // 348→ 더 천천히 계속
 }
 static float curve_interval(float t){
-    float base = 1.25f - t*0.012f;       // 시작 넉넉, 점점 촘촘
-    if (base < 0.5f) base = 0.5f;
+    float base = 1.35f - t*0.010f;       // 시작 더 넉넉(1.25→1.35), 촘촘해지는 속도 완화
+    if (base < 0.6f) base = 0.6f;        // 최소 간격 상향(0.5→0.6): 후반에도 숨 쉴 틈
     return base;
 }
 
@@ -72,8 +72,8 @@ static Obst* slot(void){ for(int i=0;i<MAX_OBST;i++) if(!obs[i].active){ obs[i].
 // 장애물 패턴 — 단일 메커니즘(중력) 안에서 깊이.
 static void spawn(float t){
     float x = SCRW + 24;
-    // 난이도 따라 패턴 풀 확장(점진 도입 = invisible 학습)
-    int maxpat = (t<8)?1 : (t<20)?3 : (t<35)?5 : 6;
+    // 난이도 따라 패턴 풀 확장(점진 도입 = invisible 학습). 난이도 하향: 어려운 패턴 도입 시점 연장.
+    int maxpat = (t<10)?1 : (t<24)?3 : (t<42)?5 : 6;
     int pat = rnd(maxpat);
     switch(pat){
     case 0: { // 단일 기둥 (가장 쉬움 — 온보딩 첫 패턴)

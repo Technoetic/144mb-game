@@ -22,15 +22,15 @@ typedef struct{float x,y,w,h,vy;int moving,active;}Obst;
 static Obst obs[MAX_OBST];
 
 static float curve_speed(float t){
-    if(t<12.0f)return 190.0f+t*4.0f;
-    else if(t<40.0f)return 238.0f+(t-12.0f)*5.0f;
-    else return 378.0f+(t-40.0f)*2.5f;
+    if(t<14.0f)return 175.0f+t*3.5f;
+    else if(t<45.0f)return 224.0f+(t-14.0f)*4.0f;
+    else return 348.0f+(t-45.0f)*2.0f;
 }
-static float curve_interval(float t){float b=1.25f-t*0.012f;if(b<0.5f)b=0.5f;return b;}
+static float curve_interval(float t){float b=1.35f-t*0.010f;if(b<0.6f)b=0.6f;return b;}
 static Obst* slot(void){for(int i=0;i<MAX_OBST;i++)if(!obs[i].active)return &obs[i];return 0;}
 
 static void spawn(float t){
-    float x=SCRW+24; int maxpat=(t<8)?1:(t<20)?3:(t<35)?5:6; int pat=rnd(maxpat);
+    float x=SCRW+24; int maxpat=(t<10)?1:(t<24)?3:(t<42)?5:6; int pat=rnd(maxpat);
     switch(pat){
     case 0:{Obst*o=slot();if(!o)return;o->active=1;o->moving=0;o->vy=0;o->x=x;o->w=26+rnd(16);o->h=50+rnd(70);if(rnd(2))o->y=FLOOR_Y-o->h;else o->y=CEIL_Y;}break;
     case 1:{int gh=130-(int)(t*0.6f);if(gh<95)gh=95;int gy=CEIL_Y+30+rnd(PLAYZONE-gh-60);
