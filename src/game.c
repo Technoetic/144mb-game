@@ -66,7 +66,8 @@ static void reset_play(void){
     for(int k=0;k<TRAIL;k++){trailX[k]=PLAYER_X;trailY[k]=FLOOR_Y-PSIZE;} for(int k=0;k<POPS;k++)pops[k].life=0;
 }
 
-static Obst* slot(void){ for(int i=0;i<MAX_OBST;i++) if(!obs[i].active) return &obs[i]; return 0; }
+// 슬롯 확보 시 passed를 0으로 초기화 — 슬롯 재사용 버그 차단(이전 장애물의 passed=1 잔존 → +1 팝업 누락).
+static Obst* slot(void){ for(int i=0;i<MAX_OBST;i++) if(!obs[i].active){ obs[i].passed=0; return &obs[i]; } return 0; }
 
 // 장애물 패턴 — 단일 메커니즘(중력) 안에서 깊이.
 static void spawn(float t){
